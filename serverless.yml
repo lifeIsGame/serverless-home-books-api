@@ -12,14 +12,6 @@
 # Happy Coding!
 
 service: books-api
-# app and org for use with dashboard.serverless.com
-app: impressit
-org: mukharamovrm
-
-# You can pin your service to only deploy with a specific Serverless version
-# Check out our docs for more details
-# frameworkVersion: "=X.X.X"
-
 plugins:
   - serverless-plugin-typescript
   - serverless-dynamodb-local
@@ -58,47 +50,7 @@ provider:
         - dynamodb:DeleteItem
       Resource: '*'
 
-# you can overwrite defaults here
-#  stage: dev
-#  region: us-east-1
-
-# you can add statements to the Lambda function's IAM Role here
-#  iamRoleStatements:
-#    - Effect: "Allow"
-#      Action:
-#        - "s3:ListBucket"
-#      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
-#    - Effect: "Allow"
-#      Action:
-#        - "s3:PutObject"
-#      Resource:
-#        Fn::Join:
-#          - ""
-#          - - "arn:aws:s3:::"
-#            - "Ref" : "ServerlessDeploymentBucket"
-#            - "/*"
-
-# you can define service wide environment variables here
-#  environment:
-#    variable1: value1
-
-# you can add packaging information here
-#package:
-#  include:
-#    - include-me.js
-#    - include-me-dir/**
-#  exclude:
-#    - exclude-me.js
-#    - exclude-me-dir/**
-
 functions:
-  #  scan:
-  #    handler: src/functions/scan.handler
-  #    events:
-  #      - http:
-  #          path: books
-  #          method: get
-  #          cors: true
   create:
     handler: src/functions/booksCreate.handler
     events:
