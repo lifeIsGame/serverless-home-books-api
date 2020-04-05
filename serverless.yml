@@ -113,6 +113,13 @@ functions:
           path: books/{id}
           method: get
           cors: true
+  delete:
+    handler: src/functions/booksDelete.handler
+    events:
+      - http:
+          path: books/{id}
+          method: delete
+          cors: true
   scan:
     handler: src/functions/booksScan.handler
     events:
