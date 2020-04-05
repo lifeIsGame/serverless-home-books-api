@@ -1,9 +1,5 @@
 {
   "compilerOptions": {
-    "baseUrl": "./src",
-    "paths": {
-      "@types/*": ["types/*"]
-    },
     "preserveConstEnums": true,
     "strictNullChecks": true,
     "sourceMap": true,
