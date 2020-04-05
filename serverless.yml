@@ -20,9 +20,43 @@ org: mukharamovrm
 # Check out our docs for more details
 # frameworkVersion: "=X.X.X"
 
+plugins:
+  - serverless-plugin-typescript
+  - serverless-dynamodb-local
+  - serverless-offline
+
+custom:
+  dynamodb:
+    # If you only want to use DynamoDB Local in some stages, declare them here
+    stages:
+      - ${self:provider.stage}
+    start:
+      port: 8000
+      inMemory: true
+      heapInitial: 200m
+      heapMax: 1g
+      migrate: true
+      seed: true
+      convertEmptyValues: true
+    # Uncomment only if you already have a DynamoDB running locally
+    # noStart: true
+
 provider:
   name: aws
-  runtime: nodejs12.x
+  runtime: nodejs10.x
+  region: 'eu-central-1'
+  stage: dev
+  environment:
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: '*'
 
 # you can overwrite defaults here
 #  stage: dev
@@ -58,12 +92,27 @@ provider:
 #    - exclude-me-dir/**
 
 functions:
-  hello:
-    handler: handler.hello
+  #  scan:
+  #    handler: src/functions/scan.handler
+  #    events:
+  #      - http:
+  #          path: books
+  #          method: get
+  #          cors: true
+  create:
+    handler: src/functions/booksCreate.handler
     events:
       - http:
-          path: /hello
-          method: get
+          path: books
+          method: post
+          cors: true
+#  get:
+#    handler: src/functions/get.handler
+#    events:
+#      - http:
+#          path: books/{id}
+#          method: get
+#          cors: true
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
@@ -105,13 +154,6 @@ functions:
 #      variable2: value2
 
 # you can add CloudFormation resource templates here
-#resources:
-#  Resources:
-#    NewResource:
-#      Type: AWS::S3::Bucket
-#      Properties:
-#        BucketName: my-new-bucket
-#  Outputs:
-#     NewOutput:
-#       Description: "Description for the output"
-#       Value: "Some output value"
+resources:
+  # DynamoDB
+  - ${file(config/resources/dynamodb-table-books.yml)}

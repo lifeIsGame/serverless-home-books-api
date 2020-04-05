@@ -1,0 +1,14 @@
+Resources:
+  BooksTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: books
+      AttributeDefinitions:
+        - AttributeName: uuid
+          AttributeType: S
+      KeySchema:
+        - AttributeName: uuid
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
