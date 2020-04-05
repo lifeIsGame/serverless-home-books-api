@@ -1,4 +1,4 @@
-import { v1 as uuidv1 } from 'uuid';
+import { v1 } from 'uuid';
 import { ICallback, IBook, IEvent } from '../types/functionTypes';
 import odmClient from '../utils/odmClient';
 import { DocumentClient } from 'aws-sdk/clients/dynamodb';
@@ -7,6 +7,8 @@ const headers = {
   'Content-Type': 'application/json',
 };
 
+const validateMessage = 'missing required parameters';
+
 export const handler = async (event: IEvent, context: any, callback: ICallback) => {
   const timestamp: number = new Date().getTime();
   const data: IBook = JSON.parse(event.body);
@@ -14,13 +16,22 @@ export const handler = async (event: IEvent, context: any, callback: ICallback) 
   const params: DocumentClient.PutItemInput = {
     TableName: 'books',
     Item: {
-      uuid: uuidv1(),
+      uuid: v1(),
       name: data.name,
       authorName: data.authorName,
       releaseDate: timestamp,
       updatedAt: timestamp,
     } as IBook,
   };
+
+  if (!data.name || !data.authorName) {
+    const response = {
+      statusCode: 400,
+      headers,
+      body: JSON.stringify({ result: null, errors: [validateMessage] }),
+    };
+    callback(null, response);
+  }
 
   try {
     await odmClient.put(params).promise();
