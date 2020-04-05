@@ -13,6 +13,8 @@
   },
   "homepage": "https://github.com/lifeIsGame/serverless-impressit-books-api#readme",
   "scripts": {
+    "deploy": "sls deploy",
+    "remove": "sls remove",
     "test": "jest"
   },
   "dependencies": {
