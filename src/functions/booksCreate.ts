@@ -1,16 +1,17 @@
 import { v1 as uuidv1 } from 'uuid';
-import { ICallback } from '../types/functionTypes';
+import { ICallback, IBook, IEvent } from '../types/functionTypes';
 import odmClient from '../utils/odmClient';
+import { DocumentClient } from 'aws-sdk/clients/dynamodb';
 
 const headers = {
   'Content-Type': 'application/json',
 };
 
-export const handler = async (event: any, context: any, callback: ICallback) => {
+export const handler = async (event: IEvent, context: any, callback: ICallback) => {
   const timestamp: number = new Date().getTime();
-  const data = JSON.parse(event.body);
+  const data: IBook = JSON.parse(event.body);
 
-  const params = {
+  const params: DocumentClient.PutItemInput = {
     TableName: 'books',
     Item: {
       uuid: uuidv1(),
@@ -18,7 +19,7 @@ export const handler = async (event: any, context: any, callback: ICallback) => 
       authorName: data.authorName,
       releaseDate: timestamp,
       updatedAt: timestamp,
-    },
+    } as IBook,
   };
 
   try {

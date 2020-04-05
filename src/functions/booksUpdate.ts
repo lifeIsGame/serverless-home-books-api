@@ -1,5 +1,5 @@
 import odmClient from '../utils/odmClient';
-import { ICallback, IEvent } from '../types/functionTypes';
+import { ICallback, IEvent, IBook } from '../types/functionTypes';
 import { DocumentClient } from 'aws-sdk/clients/dynamodb';
 
 const headers = {
@@ -7,21 +7,34 @@ const headers = {
 };
 
 const TableName = 'books';
+const UpdateExpression = 'set #bookName=:name, updatedAt=:updatedAt';
+const ReturnValues = 'UPDATED_NEW';
 
 export const handler = async (event: IEvent, context: any, callback: ICallback) => {
   const uuid = event.pathParameters.bookUuid;
+  const timestamp = new Date().getTime();
+  const data: IBook = JSON.parse(event.body);
 
-  const params: DocumentClient.GetItemInput = {
+  const params: DocumentClient.UpdateItemInput = {
     TableName,
     Key: {
       uuid,
     },
+    ExpressionAttributeNames: {
+      '#bookName': 'name',
+    },
+    ExpressionAttributeValues: {
+      ':name': data.name,
+      ':updatedAt': timestamp,
+    },
+    UpdateExpression,
+    ReturnValues,
   };
 
   try {
-    const promise: DocumentClient.GetItemOutput = await odmClient.get(params).promise();
+    const promise: DocumentClient.UpdateItemOutput = await odmClient.update(params).promise();
     const response = {
-      statusCode: 200,
+      statusCode: 201,
       headers,
       body: JSON.stringify(promise),
     };

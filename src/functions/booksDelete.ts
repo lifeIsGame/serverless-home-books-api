@@ -1,6 +1,6 @@
 import odmClient from '../utils/odmClient';
-import { ICallback } from '../types/functionTypes';
-import { DeleteItemInput, DeleteItemOutput } from 'aws-sdk/clients/dynamodb';
+import { ICallback, IEvent } from '../types/functionTypes';
+import { DocumentClient } from 'aws-sdk/clients/dynamodb';
 
 const headers = {
   'Content-Type': 'application/json',
@@ -8,10 +8,10 @@ const headers = {
 
 const TableName = 'books';
 
-export const handler = async (event: any, context: any, callback: ICallback) => {
-  const uuid = event.pathParameters.id;
+export const handler = async (event: IEvent, context: any, callback: ICallback) => {
+  const uuid = event.pathParameters.bookUuid;
 
-  const params: DeleteItemInput = {
+  const params: DocumentClient.DeleteItemInput = {
     TableName,
     Key: {
       uuid,
@@ -25,9 +25,9 @@ export const handler = async (event: any, context: any, callback: ICallback) => 
   };
 
   try {
-    const promise: DeleteItemOutput = await odmClient.delete(params).promise();
+    const promise: DocumentClient.DeleteItemOutput = await odmClient.delete(params).promise();
     const CapacityUnits: number | undefined = promise?.ConsumedCapacity?.CapacityUnits;
-    
+
     if (CapacityUnits) {
       response.statusCode = 404;
       response.body = '';

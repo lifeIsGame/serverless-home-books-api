@@ -103,22 +103,29 @@ functions:
     handler: src/functions/booksCreate.handler
     events:
       - http:
-          path: books
+          path: books/add
           method: post
           cors: true
   get:
     handler: src/functions/booksGet.handler
     events:
       - http:
-          path: books/{id}
+          path: books/{bookUuid}
           method: get
           cors: true
   delete:
     handler: src/functions/booksDelete.handler
     events:
       - http:
-          path: books/{id}
+          path: books/{bookUuid}/delete
           method: delete
+          cors: true
+  update:
+    handler: src/functions/booksUpdate.handler
+    events:
+      - http:
+          path: books/{bookUuid}/update
+          method: put
           cors: true
   scan:
     handler: src/functions/booksScan.handler
