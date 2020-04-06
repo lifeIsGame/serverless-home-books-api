@@ -17,8 +17,9 @@ API shoul provide five endpoints:
 ```
 uuid: string
 name: string
-releaseDate: number
 authorName: string
+releaseDate: number
+updatedAt: number
 ```
 
 ## Requrements
